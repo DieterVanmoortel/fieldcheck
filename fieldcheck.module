@@ -1,0 +1,27 @@
+<?php
+
+// TODO : create a hook_fieldcheck that works for all modules
+
+// TODO : add #element_validate in a hook_form_alter or someething
+
+
+
+function hook_menu() {
+  $items['form'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('fieldcheck_form'),
+    'access arguments' => array('access content'),
+  );
+}
+
+function fieldcheck_form() {
+  $form['test'] = array(
+    '#type' => 'tekstfield',
+    '#title' => 'test me',
+  );
+  $form['test2'] = array(
+    '#type' => 'tekstfield',
+    '#title' => 'test me 2',
+  );
+  return $form;
+}

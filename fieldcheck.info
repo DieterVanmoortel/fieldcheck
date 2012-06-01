@@ -1,0 +1,6 @@
+core = "7.x"
+name = "Field Check"
+package = "Nascom"
+version = "7.x-1.dev"
+description = "Instant & fast field validation"
+scripts[] = "fieldcheck.js"
