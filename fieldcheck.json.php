@@ -30,7 +30,6 @@ function fieldcheck_validate() {
 
 
   $status = TRUE;
-  $field_id 			= $_POST['id'];
   $value 					= $_POST['value'];
   $validate 			= $_POST['validate'];
   $required_value	=  isset($_POST['requiredValue']) ? $_POST['requiredValue'] : '';

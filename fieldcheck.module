@@ -6,22 +6,29 @@
 
 
 
-function hook_menu() {
+function fieldcheck_menu() {
   $items['form'] = array(
     'page callback' => 'drupal_get_form',
     'page arguments' => array('fieldcheck_form'),
     'access arguments' => array('access content'),
   );
+  return $items;
 }
 
 function fieldcheck_form() {
   $form['test'] = array(
-    '#type' => 'tekstfield',
+    '#type' => 'textfield',
     '#title' => 'test me',
+    '#attributes' => array(
+      'validators' => array('true', 'number'),
+    ),
   );
   $form['test2'] = array(
-    '#type' => 'tekstfield',
+    '#type' => 'textfield',
     '#title' => 'test me 2',
+    '#attributes' => array(
+      'validators' => array('true'),
+    ),
   );
   return $form;
 }
