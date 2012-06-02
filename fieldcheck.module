@@ -20,14 +20,14 @@ function fieldcheck_form() {
     '#type' => 'textfield',
     '#title' => 'test me',
     '#attributes' => array(
-      'validators' => array('true', 'number'),
+      'validators' => array('required', 'number'),
     ),
   );
   $form['test2'] = array(
     '#type' => 'textfield',
     '#title' => 'test me 2',
     '#attributes' => array(
-      'validators' => array('true'),
+      'validators' => array('required'),
     ),
   );
   return $form;

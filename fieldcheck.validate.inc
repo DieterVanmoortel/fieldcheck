@@ -7,9 +7,17 @@ function fieldcheck_fieldcheck() {
       'callback' => 'validate_number',
       'error' => 'This is not a number',
     ),
-    'true' => array(
-      'callback' => 'validate_true',
-      'error' => 'This is not true',
+    'required' => array(
+      'callback' => 'validate_required',
+      'error' => 'This is a required field',
     ),
   );
+}
+
+function validate_number($value) {
+ return is_numeric($value);
+}
+
+function validate_required($value) {
+  return zqempty($value);
 }
