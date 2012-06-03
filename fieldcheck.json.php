@@ -10,9 +10,14 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE); //  Do we need to bootstrap?
 
 $validators = explode(' ', $_POST['validators']);
 $value = $_POST['value'];
-
-drupal_json_output(fieldcheck_validate($value, $validators));
-
+if(in_array('optional', $validators)) {
+  $key = array_search('optional', $validators);
+  if(empty($value)) {drupal_json_output(array('succes' => TRUE, 'optional' => TRUE));}
+  else {unset($validators[$key]);}
+}
+else{
+  drupal_json_output(fieldcheck_validate($value, $validators));
+}
 
 /**
  * Validation router
@@ -29,8 +34,10 @@ function fieldcheck_validate($value, $validators) {
       }
     }
   }
+  // validation of the entered value
   foreach((array)$validators as $validator) {
     $function = $checks[$validator]['callback'];
+    // check for optional
     if(!function_exists($function)) {
       return array('succes' => FALSE, 'error' => 'unable to validate');
     } 
