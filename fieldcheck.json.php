@@ -18,12 +18,21 @@ drupal_json_output(fieldcheck_validate($value, $validators));
  * Validation router
  */
 function fieldcheck_validate($value, $validators) {
+  drupal_load('module', 'fieldcheck');
   module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
-  $checks = fieldcheck_fieldcheck();
+  $checks = fieldcheck_get_checks();
+  if(isset($checks['files'])){
+    foreach((array)$checks['files'] as $mod => $modfiles) {
+      foreach((array)$modfiles as $file) {
+        $filepath = str_replace('.inc', '', $file);
+        module_load_include('inc', $mod, $filepath);
+      }
+    }
+  }
   foreach((array)$validators as $validator) {
     $function = $checks[$validator]['callback'];
     if(!function_exists($function)) {
-      continue;
+      return array('succes' => FALSE, 'error' => 'unable to validate');
     } 
     else if(!$function($value)){
       return array('succes' => FALSE, 'error' => $checks[$validator]['error']);

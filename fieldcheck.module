@@ -48,9 +48,21 @@ function fieldcheck_validation_router($element, &$form_state, $form) {
 function fieldcheck_get_checks(){
   $mods = module_implements('fieldcheck');
   $checks = array();
-  foreach((array) $mods as $mod){
-    $callback = $mod . '_fieldcheck';
-    $checks = array_merge($checks, $callback());
+  if ($cache = cache_get('fieldcheck_checks')) {
+    $checks = $cache->data;
+  }
+  else {
+    foreach((array) $mods as $mod){
+      $callback = $mod . '_fieldcheck';
+      $modchecks = $callback();
+      foreach((array)$modchecks as $modcheck){
+        if(isset($modcheck['file'])){
+          $checks['files'][$mod][] = $modcheck['file'];
+        }
+      }
+      $checks = array_merge($checks, $modchecks);
+    }
+    cache_set('fieldcheck_checks', $checks, 'cache');
   }
   return $checks;
 }
@@ -91,14 +103,14 @@ function fieldcheck_form() {
     '#type' => 'textfield',
     '#title' => 'test me',
     '#attributes' => array(
-      'validators' => array('required', 'number'),
+      'validators' => array('required', 'number', 'even'),
     ),
   );
   $form['test2'] = array(
     '#type' => 'textfield',
     '#title' => 'test me 2',
     '#attributes' => array(
-      'validators' => array('blabh'),
+      'validators' => array('number', 'uneven'),
     ),
   );
   $form['submit'] = array(

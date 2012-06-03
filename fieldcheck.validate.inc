@@ -6,7 +6,6 @@ function fieldcheck_fieldcheck() {
     'number' => array(
       'callback' => 'validate_number',
       'error' => t('This is not a number'),
-      'file' => '',
     ),
     'required' => array(
       'callback' => 'validate_required',
