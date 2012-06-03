@@ -19,5 +19,5 @@ function validate_number($value) {
 }
 
 function validate_required($value) {
-  return zqempty($value);
+  return !empty($value);
 }

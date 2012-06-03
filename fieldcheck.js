@@ -12,22 +12,24 @@
             data: {
               validators: element.attr('validators'),
               value: element.val(),
-//              requiredValue: Drupal.behaviors.featureForm.getRequiredValue( event.data.requiredValue )
             },
             success: function(data){
-              console.log(data);
-              if( data.status ) {
-                //                Drupal.behaviors.featureForm.changeFieldStatus(element, 'status-success');
-              }
-              else {
-//                Drupal.behaviors.featureForm.changeFieldStatus(element, 'status-error', data.error);
-              }
+              Drupal.behaviors.fieldCheck.changeFieldStatus(element, data);
             }
           });
-            });
-          }
-        }
-
+        });
+      }
+    },
+    changeFieldStatus: function(element, data) {
+      element.parent().find('.validation-msg').remove();
+      if(data.succes){
+        element.removeClass('error').addClass('validated succes');
+      }
+      else{
+        element.removeClass('succes').addClass('validated error');
+        element.parent().append('<div class="validation-msg">' + data.error + '</div>');
+      }
+    }
   };
 
 })(jQuery);
