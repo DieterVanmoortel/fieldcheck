@@ -1,10 +1,81 @@
 <?php
 
-// TODO : create a hook_fieldcheck that works for all modules
+// TODO : create a hook_fieldcheck that works for all modules => use the file to get a list of files to include?
 
-// TODO : add #element_validate in a hook_form_alter or someething
+module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
+/**
+ * Implementing hook_form_alter
+ */
+function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
+  // Add the validators as #element_validate attributes for validation after submit
+  $checks = fieldcheck_get_checks();
+  foreach((array)$form as $key => $formitem){
+    if(isset($formitem['#attributes']) && isset($formitem['#attributes']['validators'])) {
+      $validators = $formitem['#attributes']['validators'];
+      foreach((array)$validators as $validator) {
+        if(!isset($checks[$validator])) {continue;}
+        $function = $checks[$validator]['callback'];
+        if(!isset($form[$key]['#element_validate']) || !in_array('fieldcheck_validation_router', $form[$key]['#element_validate'])) {
+          $form[$key]['#element_validate'][] = 'fieldcheck_validation_router';
+        }
+      }
+    }
+  }
+}
+
+/**
+ * The #element_validate router function
+ * @param type $element
+ * @param type $form_state
+ * @param type $form 
+ */
+function fieldcheck_validation_router($element, &$form_state, $form) {
+  $validators = $element['#attributes']['validators'];
+  $checks = fieldcheck_get_checks();
+  foreach((array)$validators as $val) {
+    $function = $checks[$val]['callback'];
+    if(function_exists($function) && !$function($element['#value'])){
+      form_error($element, $checks[$val]['error']);
+    }
+  }
+}
+
+/*
+ * Helper function that returns all checks
+ * 
+ * returns array
+ */
+function fieldcheck_get_checks(){
+  $mods = module_implements('fieldcheck');
+  $checks = array();
+  foreach((array) $mods as $mod){
+    $callback = $mod . '_fieldcheck';
+    $checks = array_merge($checks, $callback());
+  }
+  return $checks;
+}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * TEST FORM BELOW
+ * @return array 
+ */
 
 function fieldcheck_menu() {
   $items['form'] = array(
@@ -27,8 +98,12 @@ function fieldcheck_form() {
     '#type' => 'textfield',
     '#title' => 'test me 2',
     '#attributes' => array(
-      'validators' => array('required'),
+      'validators' => array('blabh'),
     ),
+  );
+  $form['submit'] = array(
+      '#type' => 'submit', 
+      '#value' => 'Verzenden die hap!',
   );
   return $form;
 }

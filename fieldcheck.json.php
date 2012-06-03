@@ -1,21 +1,15 @@
 <?php
-// TODO clean this up
 chdir($_SERVER['DOCUMENT_ROOT']);
 define('DRUPAL_ROOT', getcwd());
 
 require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
 require_once DRUPAL_ROOT . '/includes/common.inc';
 require_once DRUPAL_ROOT . '/includes/module.inc';
-//require_once DRUPAL_ROOT . '/includes/unicode.inc';
 
 drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE); //  Do we need to bootstrap?
 
-//drupal_load('module', 'transliteration');
 $validators = explode(' ', $_POST['validators']);
 $value = $_POST['value'];
-
-//$value = 5;
-//$validators = array('number', 'true');
 
 drupal_json_output(fieldcheck_validate($value, $validators));
 
@@ -24,13 +18,12 @@ drupal_json_output(fieldcheck_validate($value, $validators));
  * Validation router
  */
 function fieldcheck_validate($value, $validators) {
-  include (DRUPAL_ROOT . '/sites/all/modules/custom/fieldcheck/fieldcheck.validate.inc');
+  module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
   $checks = fieldcheck_fieldcheck();
-  
   foreach((array)$validators as $validator) {
     $function = $checks[$validator]['callback'];
     if(!function_exists($function)) {
-      return array('succes' => FALSE, 'error' => t('Could not validate: function not found'));
+      continue;
     } 
     else if(!$function($value)){
       return array('succes' => FALSE, 'error' => $checks[$validator]['error']);
