@@ -3,7 +3,6 @@
 
 function fieldcheck_fieldcheck() {
   return array(
-    'optional' => array(),
     'number' => array(
       'callback' => 'validate_number',
       'error' => t('This is not a number'),

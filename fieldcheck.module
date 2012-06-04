@@ -1,3 +1,5 @@
+
+
 <?php
 
 // TODO : create a hook_fieldcheck that works for all modules => use the file to get a list of files to include?
@@ -31,11 +33,6 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
  */
 function fieldcheck_validation_router($element, &$form_state, $form) {
   $validators = $element['#attributes']['validators'];
-  if(in_array('optional', $validators)) {
-    $key = array_search('optional', $validators);
-    if (empty($value)){exit('Optional empty value');}
-      else {unset($validators[$key]);}
-  }
   $checks = fieldcheck_get_checks();
   foreach((array)$validators as $val) {
     $function = $checks[$val]['callback'];
@@ -107,7 +104,7 @@ function fieldcheck_form() {
     '#type' => 'textfield',
     '#title' => 'test me',
     '#attributes' => array(
-      'validators' => array('optional', 'number', 'even'),
+      'validators' => array('number', 'even'),
     ),
   );
   $form['test2'] = array(
@@ -116,6 +113,7 @@ function fieldcheck_form() {
     '#attributes' => array(
       'validators' => array('number', 'uneven'),
     ),
+    '#required' => TRUE,
   );
   $form['submit'] = array(
       '#type' => 'submit', 

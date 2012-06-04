@@ -3,20 +3,29 @@
   Drupal.behaviors.fieldCheck = {
     attach: function(context) {
       if($('[validators]').length) {
+
         $('[validators]').bind('blur', function(){
           element = $(this);
-          $.ajax({
-            url: Drupal.settings.basePath + 'sites/all/modules/custom/fieldcheck/fieldcheck.json.php',
-            dataType: "json",
-            type: "POST",
-            data: {
-              validators: element.attr('validators'),
-              value: element.val(),
-            },
-            success: function(data){
-              Drupal.behaviors.fieldCheck.changeFieldStatus(element, data);
-            }
-          });
+          if(element.val() == '' && element.hasClass('required')){
+            data = new Object();
+            data.succes = false;
+            data.error = Drupal.t('This is a required field');
+            Drupal.behaviors.fieldCheck.changeFieldStatus(element, data);
+          }
+          else if(element.val() != ''){
+            $.ajax({
+              url: Drupal.settings.basePath + 'sites/all/modules/dev/fieldcheck/fieldcheck.json.php',
+              dataType: "json",
+              type: "POST",
+              data: {
+                validators: element.attr('validators'),
+                value: element.val(),
+              },
+              success: function(data){
+                Drupal.behaviors.fieldCheck.changeFieldStatus(element, data);
+              }
+            });
+          }
         });
       }
     },
