@@ -2,7 +2,6 @@
   Drupal.behaviors.fieldCheck = {
     attach: function(context) {
       if($('[validators]').length) {
-        console.log(Drupal.settings);
         $('[validators]').bind('blur', function(){
           element = $(this);
           // Exception : required values
