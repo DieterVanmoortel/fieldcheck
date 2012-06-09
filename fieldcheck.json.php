@@ -23,8 +23,9 @@ drupal_json_output(fieldcheck_validate($value, $validators));
  * Validation router
  */
 function fieldcheck_validate($value, $validators) {
+  // first get all validation functions & error msgs & load necessary files
   drupal_load('module', 'fieldcheck');
-  module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
+//  module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
   $checks = fieldcheck_get_checks();
   if(isset($checks['files'])){
     foreach((array)$checks['files'] as $mod => $modfiles) {
@@ -38,10 +39,7 @@ function fieldcheck_validate($value, $validators) {
   foreach((array)$validators as $validator) {
     // extract the function name from a validator which uses arguments
     $args = array();
-    if(strpos($validator, '|')){
-      $args = explode('|', $validator);
-      $validator = array_shift($args);
-    }
+    fieldcheck_get_args($validator, $args);
     // check if the function exists
     $function = $checks[$validator]['callback'];
     if(!function_exists($function)) {

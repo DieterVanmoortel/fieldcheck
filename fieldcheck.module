@@ -18,8 +18,10 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
       drupal_add_js(drupal_get_path('module', 'fieldcheck') . '/fieldcheck.js');
       $validators = $formitem['#attributes']['validators'];
       foreach((array)$validators as $validator) {
+  // extract the function name from a validator which uses arguments
+    $args = array();
+    fieldcheck_get_args($validator, $args);
         if(!isset($checks[$validator])) {continue;}
-//        $function = $checks[$validator]['callback'];
         if(!isset($form[$key]['#element_validate']) || !in_array('fieldcheck_validation_router', $form[$key]['#element_validate'])) {
           $form[$key]['#element_validate'][] = 'fieldcheck_validation_router';
         }
@@ -35,17 +37,26 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
  * @param type $form 
  */
 function fieldcheck_validation_router($element, &$form_state, $form) {
+  // don't validate is non-required element is empty
+  if(empty($element['#value']) && !$element['#required']){
+    return TRUE;
+  }
   $validators = $element['#attributes']['validators'];
   // we need locale module to us e t(), but use of translations isn't required..
   drupal_load('module', 'locale');
   // get all validation checks and relating error msgs
   $checks = fieldcheck_get_checks();
-  foreach((array)$validators as $val) {
-    $function = $checks[$val]['callback'];
-    if(function_exists($function) && !$function($element['#value'])){
-      form_error($element, $checks[$val]['error']);
+  foreach((array)$validators as $validator) {
+  // extract the function name from a validator which uses arguments
+    $args = array();
+    fieldcheck_get_args($validator, $args);
+    $function = $checks[$validator]['callback'];
+    if(function_exists($function) && !$function($element['#value'], $args)){
+      form_error($element, $checks[$validator]['error']);
+      break;
     }
-  }
+}
+
 }
 
 /*
@@ -72,10 +83,23 @@ function fieldcheck_get_checks(){
     }
     cache_set('fieldcheck_checks', $checks, 'cache');
   }
+  // make sure all files are loaded
+  if(isset($checks['files'])) {
+    foreach($checks['files'] as $mod => $files){
+      foreach((array)$files as $file) {
+      require_once(drupal_get_path('module', $mod) . '/' . $file);
+      }
+    }
+  }
   return $checks;
 }
 
-
+function fieldcheck_get_args(&$validator = '', &$args = array()) {
+  if(strpos($validator, '|')){
+    $args = explode('|', $validator);
+    $validator = array_shift($args);
+  }
+}
 
 
 
@@ -108,14 +132,14 @@ function fieldcheck_menu() {
 function fieldcheck_form() {
   $form['test'] = array(
     '#type' => 'textfield',
-    '#title' => 'test me',
+    '#title' => 'Enter an even number',
     '#attributes' => array(
       'validators' => array('number', 'even'),
     ),
   );
   $form['test2'] = array(
     '#type' => 'textfield',
-    '#title' => '15 or 22',
+    '#title' => 'Enter 15 or 22',
     '#attributes' => array(
       'validators' => array('equals|15|22'),
     ),
