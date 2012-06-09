@@ -1,9 +1,8 @@
-
 (function($){
   Drupal.behaviors.fieldCheck = {
     attach: function(context) {
       if($('[validators]').length) {
-        console.log(Drupal.settings.fieldCheck);
+        console.log(Drupal.settings);
         $('[validators]').bind('blur', function(){
           element = $(this);
           // Exception : required values
@@ -15,7 +14,7 @@
           }
           else if(element.val() != ''){
             $.ajax({
-              url: Drupal.settings.fieldCheck.modulePath + '/fieldcheck.json.php',
+              url: Drupal.settings.basePath + Drupal.settings.fieldCheck.modulePath + '/fieldcheck.json.php',
               dataType: "json",
               type: "POST",
               data: {
@@ -43,4 +42,3 @@
   };
 
 })(jQuery);
-

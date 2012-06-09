@@ -5,9 +5,10 @@
 module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
 /**
  * Implementing hook_form_alter
+ * Add the validators as #element_validate attributes for validation after submit
  */
 function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
-  // Add the validators as #element_validate attributes for validation after submit
+  // get all validation checks and relating error msgs
   $checks = fieldcheck_get_checks();
   foreach((array)$form as $key => $formitem){
     if(isset($formitem['#attributes']) && isset($formitem['#attributes']['validators'])) {
@@ -17,7 +18,7 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
       $validators = $formitem['#attributes']['validators'];
       foreach((array)$validators as $validator) {
         if(!isset($checks[$validator])) {continue;}
-        $function = $checks[$validator]['callback'];
+//        $function = $checks[$validator]['callback'];
         if(!isset($form[$key]['#element_validate']) || !in_array('fieldcheck_validation_router', $form[$key]['#element_validate'])) {
           $form[$key]['#element_validate'][] = 'fieldcheck_validation_router';
         }
@@ -34,6 +35,9 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
  */
 function fieldcheck_validation_router($element, &$form_state, $form) {
   $validators = $element['#attributes']['validators'];
+  // we need locale module to us e t(), but use of translations isn't required..
+  drupal_load('module', 'locale');
+  // get all validation checks and relating error msgs
   $checks = fieldcheck_get_checks();
   foreach((array)$validators as $val) {
     $function = $checks[$val]['callback'];

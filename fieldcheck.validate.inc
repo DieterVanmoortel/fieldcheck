@@ -2,17 +2,16 @@
 
 
 function fieldcheck_fieldcheck() {
-  drupal_load('module', 'locale');
-  return array(
-    'number' => array(
-      'callback' => 'validate_number',
-      'error' => t('This is not a number'),
-    ),
-    'required' => array(
-      'callback' => 'validate_required',
-      'error' => t('This is a required field'),
-    ),
-  );
+    return array(
+      'number' => array(
+        'callback' => 'validate_number',
+        'error' => t('This is not a number'),
+      ),
+      'required' => array(
+        'callback' => 'validate_required',
+        'error' => t('This is a required field'),
+      ),
+    );
 }
 
 function validate_number($value) {
