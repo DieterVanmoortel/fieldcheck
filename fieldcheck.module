@@ -1,6 +1,7 @@
-
-
 <?php
+
+// Include a dev form
+module_load_include('inc', 'fieldcheck', 'fieldcheck.dev');
 
 module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
 /**
@@ -114,9 +115,9 @@ function fieldcheck_form() {
   );
   $form['test2'] = array(
     '#type' => 'textfield',
-    '#title' => 'test me 2',
+    '#title' => '15 or 22',
     '#attributes' => array(
-      'validators' => array('number', 'uneven'),
+      'validators' => array('equals|15|22'),
     ),
     '#required' => TRUE,
   );

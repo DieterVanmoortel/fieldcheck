@@ -11,6 +11,11 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE); //  Faster alternative to bootstrap
 // get all posted data
 $validators = explode(' ', $_POST['validators']);
 $value = $_POST['value'];
+
+// DEV
+//$value = 2;
+//$validators = explode(' ', 'equals|2|3');
+
 drupal_json_output(fieldcheck_validate($value, $validators));
 
 
@@ -31,13 +36,22 @@ function fieldcheck_validate($value, $validators) {
   }
   // validation of the entered value
   foreach((array)$validators as $validator) {
+    // extract the function name from a validator which uses arguments
+    $args = array();
+    if(strpos($validator, '|')){
+      $args = explode('|', $validator);
+      $validator = array_shift($args);
+    }
+    // check if the function exists
     $function = $checks[$validator]['callback'];
     if(!function_exists($function)) {
       return array('succes' => FALSE, 'error' => 'unable to validate');
     } 
-    else if(!$function($value)){
-      return array('succes' => FALSE, 'error' => $checks[$validator]['error']);
+    // and validate the entered value
+    else if(!$function($value, $args)){
+        return array('succes' => FALSE, 'error' => $checks[$validator]['error']);
     }
   }
+  // If all validations are succesfull
   return array('succes' => TRUE);
 }
