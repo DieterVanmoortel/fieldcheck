@@ -2,8 +2,6 @@
 
 <?php
 
-// TODO : create a hook_fieldcheck that works for all modules => use the file to get a list of files to include?
-
 module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
 /**
  * Implementing hook_form_alter
@@ -13,6 +11,9 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
   $checks = fieldcheck_get_checks();
   foreach((array)$form as $key => $formitem){
     if(isset($formitem['#attributes']) && isset($formitem['#attributes']['validators'])) {
+      // add the necessary js
+      drupal_add_js(array('fieldCheck' => array('modulePath' =>  drupal_get_path('module', 'fieldcheck'))), 'setting');
+      drupal_add_js(drupal_get_path('module', 'fieldcheck') . '/fieldcheck.js');
       $validators = $formitem['#attributes']['validators'];
       foreach((array)$validators as $validator) {
         if(!isset($checks[$validator])) {continue;}

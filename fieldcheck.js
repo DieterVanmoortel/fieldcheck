@@ -3,9 +3,10 @@
   Drupal.behaviors.fieldCheck = {
     attach: function(context) {
       if($('[validators]').length) {
-
+        console.log(Drupal.settings.fieldCheck);
         $('[validators]').bind('blur', function(){
           element = $(this);
+          // Exception : required values
           if(element.val() == '' && element.hasClass('required')){
             data = new Object();
             data.succes = false;
@@ -14,12 +15,12 @@
           }
           else if(element.val() != ''){
             $.ajax({
-              url: Drupal.settings.basePath + 'sites/all/modules/dev/fieldcheck/fieldcheck.json.php',
+              url: Drupal.settings.fieldCheck.modulePath + '/fieldcheck.json.php',
               dataType: "json",
               type: "POST",
               data: {
                 validators: element.attr('validators'),
-                value: element.val(),
+                value: element.val()
               },
               success: function(data){
                 Drupal.behaviors.fieldCheck.changeFieldStatus(element, data);

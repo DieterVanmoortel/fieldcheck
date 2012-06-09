@@ -8,6 +8,9 @@ require_once DRUPAL_ROOT . '/includes/module.inc';
 
 drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE); //  Faster alternative to bootstrap?
 
+//// we need locale module for t() to work
+//drupal_load('module', 'locale');
+// get all posted data
 $validators = explode(' ', $_POST['validators']);
 $value = $_POST['value'];
 drupal_json_output(fieldcheck_validate($value, $validators));

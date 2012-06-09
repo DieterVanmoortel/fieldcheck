@@ -2,6 +2,7 @@
 
 
 function fieldcheck_fieldcheck() {
+  drupal_load('module', 'locale');
   return array(
     'number' => array(
       'callback' => 'validate_number',
