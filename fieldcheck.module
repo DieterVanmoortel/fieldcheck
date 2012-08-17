@@ -28,6 +28,14 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
       }
     }
   }
+
+  // new feature : hide validated fields
+  if(form_get_errors()){
+    drupal_add_js(array('fieldCheck' => array('validated' => true)), 'setting');
+  }
+  else{
+    drupal_add_js(array('fieldCheck' => array('validated' => false)), 'setting');
+  }
 }
 
 /**
@@ -55,8 +63,8 @@ function fieldcheck_validation_router($element, &$form_state, $form) {
       form_error($element, $checks[$validator]['error']);
       break;
     }
-}
-
+  }
+  drupal_add_js(array('fieldCheck' => array('validated' => true)), 'setting');
 }
 
 /*
@@ -93,14 +101,15 @@ function fieldcheck_get_checks(){
   }
   return $checks;
 }
-
+/*
+ * Helper function that gets arguments from validators
+ */
 function fieldcheck_get_args(&$validator = '', &$args = array()) {
   if(strpos($validator, '|')){
     $args = explode('|', $validator);
     $validator = array_shift($args);
   }
 }
-
 
 
 

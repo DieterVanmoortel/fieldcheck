@@ -1,4 +1,4 @@
-.form-item .validated.error{border:1px solid red;}
-.form-item .validated.succes{border:1px solid green;}
-.form-item .validation-msg{color:red;}
+.form-item .validated-error{border:1px solid #FF0000; background-color:#FEF5F1;}
+.form-item .validated-succes{border:1px solid green;}
+.form-item .validation-msg{color:#FF0000;}
 
