@@ -13,6 +13,15 @@ function fieldcheck_fieldcheck() {
         'callback' => 'validate_equals',
         'error' => t('This is not the correct value'),
       ),
+      'even' => array(
+        'callback' => 'validate_even',
+        'error' => t('This is not an even value'),
+      ),
+      'uneven' => array(
+        'callback' => 'validate_even',
+        'error' => t('This is not an uneven value'),
+      ),
+
     );
 }
 
@@ -29,4 +38,12 @@ function validate_number($value) {
 
 function validate_equals($value, $args, $fsv = array()){
   return in_array($value, $args);
+}
+
+function validate_even($value) {
+  return (is_numeric($value) && fmod($value, 2) == 0);
+}
+
+function validate_uneven($value) {
+    return (is_numeric($value) && fmod($value, 2) == 1);
 }

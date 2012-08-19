@@ -1,6 +1,11 @@
 (function($){
   Drupal.behaviors.fieldCheck = {
     attach: function(context) {
+      // hide validated fields
+      if( Drupal.settings.fieldCheck.validated == true) {
+        $('input').not('.error').hide().parents('.form-item').prepend('<span>Validated</span>');
+      }
+      // core functionality for validation
       if($('[validators]').length) {
         $('[validators]').bind('blur', function(){
           element = $(this);
@@ -31,10 +36,10 @@
     changeFieldStatus: function(element, data) {
       element.parent().find('.validation-msg').remove();
       if(data.succes){
-        element.removeClass('error').addClass('validated succes');
+        element.removeClass('error').addClass('validated-succes');
       }
       else{
-        element.removeClass('succes').addClass('validated error');
+        element.removeClass('succes').addClass('validated-error');
         element.parent().append('<div class="validation-msg">' + data.error + '</div>');
       }
     }
