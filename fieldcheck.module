@@ -18,9 +18,7 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
       drupal_add_js(drupal_get_path('module', 'fieldcheck') . '/fieldcheck.js');
       $validators = $formitem['#attributes']['validators'];
       foreach((array)$validators as $validator) {
-  // extract the function name from a validator which uses arguments
-    $args = array();
-    fieldcheck_get_args($validator, $args);
+        fieldcheck_get_args($validator, $args);
         if(!isset($checks[$validator])) {continue;}
         if(!isset($form[$key]['#element_validate']) || !in_array('fieldcheck_validation_router', $form[$key]['#element_validate'])) {
           $form[$key]['#element_validate'][] = 'fieldcheck_validation_router';
@@ -47,11 +45,9 @@ function fieldcheck_validation_router($element, &$form_state, $form) {
   // get all validation checks and relating error msgs
   $checks = fieldcheck_get_checks();
   foreach((array)$validators as $validator) {
-  // extract the function name from a validator which uses arguments
-    $args = array();
     fieldcheck_get_args($validator, $args);
     $function = $checks[$validator]['callback'];
-    if(function_exists($function) && !$function($element['#value'], $args)){
+    if(function_exists($function) && !$function($element['#value'], $args, $form_state['values'])){
       form_error($element, $checks[$validator]['error']);
       break;
     }
@@ -93,7 +89,11 @@ function fieldcheck_get_checks(){
   }
   return $checks;
 }
-
+/**
+ * Helper function that extracts function name & arguments from a validator with |
+ * @param type $validator
+ * @param type $args 
+ */
 function fieldcheck_get_args(&$validator = '', &$args = array()) {
   if(strpos($validator, '|')){
     $args = explode('|', $validator);

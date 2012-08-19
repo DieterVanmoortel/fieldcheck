@@ -38,7 +38,6 @@ function fieldcheck_validate($value, $validators) {
   // validation of the entered value
   foreach((array)$validators as $validator) {
     // extract the function name from a validator which uses arguments
-    $args = array();
     fieldcheck_get_args($validator, $args);
     // check if the function exists
     $function = $checks[$validator]['callback'];
