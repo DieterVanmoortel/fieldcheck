@@ -25,7 +25,22 @@ function fieldcheck_fieldcheck() {
         'callback' => 'validate_even',
         'error' => t('This is not an uneven value'),
       ),
-
+      'email' => array(
+        'callback' => 'validate_email',
+        'error' => t('This is not a valid email'),
+      ),
+      'url' => array(
+        'callback' => 'validate_url', 
+        'error' => t('This is not a valid url'),
+      ),
+      'fchars' => array(
+          'callback' => 'validate_fchars',
+          'error' => t('Invalid start of entry'),
+      ),
+      'lchars' => array(
+          'callback' => 'validate_lchars',
+          'error' => t('Invalid end of entry'),
+      ),
     );
 }
 
@@ -54,4 +69,20 @@ function validate_even($value) {
 
 function validate_uneven($value) {
     return (is_numeric($value) && fmod($value, 2) == 1);
+}
+
+function validate_email($value) {
+  return filter_var( $value, FILTER_VALIDATE_EMAIL );
+}
+
+function validate_url($value) {
+  return filter_var( $value, FILTER_VALIDATE_URL );
+}
+
+function validate_fchars($value, $args) {
+  return substr($value, 0, strlen($args[0])) == $args[0];
+}
+
+function validate_lchars($value, $args) {
+  return substr($value, -strlen($args[0])) == $args[0];
 }

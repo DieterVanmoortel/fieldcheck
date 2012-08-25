@@ -5,7 +5,7 @@
       if( Drupal.settings.fieldCheck.validated == true) {
         // still need to replace this validated span with an icon
         // ++ and maybe add some js to show the input field again when clicking on validation icon or label
-        $('input').not('.error').hide().parents('.form-item').prepend('<span>Validated</span>');
+//        $('input').not('.error').hide().parents('.form-item').prepend('<span>Validated</span>');
       }
       // core functionality for validation
       if($('[validators]').length) {
@@ -69,10 +69,10 @@
     changeFieldStatus: function(element, data) {
       element.parent().find('.validation-msg').remove();
       if(data.succes){
-        element.removeClass('error').addClass('validated-succes');
+        element.removeClass('validated error').addClass('validated succes');
       }
       else{
-        element.removeClass('succes').addClass('validated-error');
+        element.removeClass('validated succes').addClass('validated error');
         element.parent().append('<div class="validation-msg">' + data.error + '</div>');
       }
     }

@@ -1,8 +1,5 @@
 <?php
 
-// Include a dev form
-module_load_include('inc', 'fieldcheck', 'fieldcheck.dev');
-
 module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
 /**
  * Implementing hook_form_alter
@@ -52,7 +49,7 @@ function fieldcheck_validation_router($element, &$form_state, $form) {
     return TRUE;
   }
   $validators = $element['#attributes']['validators'];
-  // we need locale module to us e t(), but use of translations isn't required..
+  // we need locale module to us e t(), but use of locale is not required to run fieldcheck
   drupal_load('module', 'locale');
   // get all validation checks and relating error msgs
   $checks = fieldcheck_get_checks();
@@ -143,9 +140,9 @@ function fieldcheck_menu() {
 function fieldcheck_form() {
   $form['test'] = array(
     '#type' => 'textfield',
-    '#title' => 'Enter an even number',
+    '#title' => 'fchars',
     '#attributes' => array(
-      'validators' => array('number', 'even'),
+      'validators' => array('lchars|123'),
     ),
   );
   $form['date'] = array(
@@ -157,15 +154,18 @@ function fieldcheck_form() {
   );
   $form['test2'] = array(
     '#type' => 'textfield',
-    '#title' => 'Enter 15 or 22',
+    '#title' => 'Email',
     '#attributes' => array(
-      'validators' => array('equals|15|22'),
+      'validators' => array('email'),
     ),
     '#required' => TRUE,
   );
   $form['submit'] = array(
       '#type' => 'submit', 
       '#value' => 'Verzenden die hap!',
+      '#attributes' => array(
+        'class' => array('submission-validation'),
+    ),
   );
   return $form;
 }
