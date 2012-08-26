@@ -5,7 +5,7 @@
       if( Drupal.settings.fieldCheck.validated == true) {
         // still need to replace this validated span with an icon
         // ++ and maybe add some js to show the input field again when clicking on validation icon or label
-//        $('input').not('.error').hide().parents('.form-item').prepend('<span>Validated</span>');
+        $('input').not('.error').after('<span class="validated-icon"></span>');
       }
       // core functionality for validation
       if($('[validators]').length) {
@@ -41,23 +41,34 @@
             }
             else if(element.val() != ''){
               element.parent('.form-item').append(spinner.el);
-              $.ajax({
+              xhr = $.ajax({
                 url: Drupal.settings.basePath + Drupal.settings.fieldCheck.modulePath + '/fieldcheck.json.php',
                 dataType: "json",
                 type: "POST",
                 data: {
+                  element: element.attr('id'),
                   validators: element.attr('validators'),
                   value: element.val()
                 },
                 success: function(data){
+                  Drupal.behaviors.fieldCheck.changeFieldStatus(data);
                   spinner.stop();
-                  Drupal.behaviors.fieldCheck.changeFieldStatus(element, data);
                 }
               });
             }
           })
         });
       }
+      // if the submit button has a class "validate-submission" we check for errors before submitting
+      if($('.validate-submission').length){
+        $('.validate-submission').bind('click', function(event){   
+          $('[validators]').trigger('blur');
+          if($('.error').length) {
+            event.preventDefault();        
+          }
+        });
+      }
+      // apply jquery.maskedinput plugin
       if($('[mask]').length) {
         $('[mask]').each(function(){
           var mask = $(this).attr('mask');
@@ -66,14 +77,17 @@
         })
       }
     },
-    changeFieldStatus: function(element, data) {
-      element.parent().find('.validation-msg').remove();
+    // Ajax result handler
+    changeFieldStatus: function(data) {
+      element = $('#' + data.element);
+      element.parent().find('.validation-msg, .validated-icon').remove();
+      element.addClass('validated');
       if(data.succes){
-        element.removeClass('validated error').addClass('validated succes');
+        element.removeClass('error').addClass('succes').after('<span class="validated-icon"></span>');
       }
       else{
-        element.removeClass('validated succes').addClass('validated error');
-        element.parent().append('<div class="validation-msg">' + data.error + '</div>');
+        element.removeClass('succes').addClass('error');
+        element.after('<div class="validation-msg">' + data.error + '</div>');
       }
     }
   };

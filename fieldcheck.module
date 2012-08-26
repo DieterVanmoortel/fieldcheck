@@ -138,6 +138,22 @@ function fieldcheck_menu() {
 }
 
 function fieldcheck_form() {
+  $form['even'] = array(
+    '#type' => 'textfield',
+    '#title' => 'even number',
+    '#attributes' => array(
+      'validators' => array('number even'),
+    ),
+    '#required' => TRUE,
+  );
+  $form['uneven'] = array(
+    '#type' => 'textfield',
+    '#title' => 'uneven number',
+    '#attributes' => array(
+      'validators' => array('number uneven'),
+    ),
+    '#required' => TRUE,
+  );
   $form['test'] = array(
     '#type' => 'textfield',
     '#title' => 'fchars',
@@ -164,7 +180,7 @@ function fieldcheck_form() {
       '#type' => 'submit', 
       '#value' => 'Verzenden die hap!',
       '#attributes' => array(
-        'class' => array('submission-validation'),
+        'class' => array('validate-submission'),
     ),
   );
   return $form;

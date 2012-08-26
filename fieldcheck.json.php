@@ -11,18 +11,15 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE); //  Faster alternative to bootstrap
 // get all posted data
 $validators = explode(' ', $_POST['validators']);
 $value = $_POST['value'];
+$element = $_POST['element'];
 
-// DEV
-//$value = 2;
-//$validators = explode(' ', 'equals|2|3');
-
-drupal_json_output(fieldcheck_validate($value, $validators));
+drupal_json_output(fieldcheck_validate($value, $validators, $element));
 
 
 /**
  * Validation router
  */
-function fieldcheck_validate($value, $validators) {
+function fieldcheck_validate($value, $validators, $element) {
   // first get all validation functions & error msgs & load necessary files
   drupal_load('module', 'fieldcheck');
 //  module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
@@ -43,13 +40,13 @@ function fieldcheck_validate($value, $validators) {
     // check if the function exists
     $function = $checks[$validator]['callback'];
     if(!function_exists($function)) {
-      return array('succes' => FALSE, 'error' => 'unable to validate');
+      return array('succes' => FALSE, 'error' => 'unable to validate', 'element' => $element);
     } 
     // and validate the entered value
     else if(!$function($value, $args)){
-        return array('succes' => FALSE, 'error' => $checks[$validator]['error']);
+        return array('succes' => FALSE, 'error' => $checks[$validator]['error'], 'element' => $element);
     }
   }
   // If all validations are succesfull
-  return array('succes' => TRUE);
+  return array('succes' => TRUE, 'element' => $element);
 }
