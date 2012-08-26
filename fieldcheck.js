@@ -36,8 +36,9 @@
             if(element.val() == '' && element.hasClass('required')){
               data = new Object();
               data.succes = false;
+              data.element = element.attr('id');
               data.error = Drupal.t('This is a required field');
-              Drupal.behaviors.fieldCheck.changeFieldStatus(element, data);
+              Drupal.behaviors.fieldCheck.changeFieldStatus(data);
             }
             else if(element.val() != ''){
               element.parent('.form-item').append(spinner.el);
@@ -62,7 +63,7 @@
       // if the submit button has a class "validate-submission" we check for errors before submitting
       if($('.validate-submission').length){
         $('.validate-submission').bind('click', function(event){   
-          $('[validators]').trigger('blur');
+          $('[validators], .required').trigger('blur');
           if($('.error').length) {
             event.preventDefault();        
           }

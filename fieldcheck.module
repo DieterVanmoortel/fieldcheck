@@ -8,7 +8,9 @@ module_load_include('inc', 'fieldcheck', 'fieldcheck.validate');
 function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
   // get all validation checks and relating error msgs
   $checks = fieldcheck_get_checks();
+
   foreach((array)$form as $key => $formitem){
+    $validators = array();
     if(isset($formitem['#attributes']) && isset($formitem['#attributes']['validators'])) {
       // add the necessary js
       drupal_add_js(array('fieldCheck' => array('modulePath' =>  drupal_get_path('module', 'fieldcheck'))), 'setting');
@@ -26,6 +28,19 @@ function fieldcheck_form_alter(&$form, $form_state, $form_id ) {
         }
       }
     }
+     // set required field 
+     if(isset($formitem['#required'])){
+//       dpm($validators, $key);
+      if(empty($validators)){
+//        $form[$key]['#attributes']['validators'] = 'required';
+      }
+      else{
+//        $existing_validators = $form[$key]['#attributes']['validators'];
+//        $form[$key]['#attributes']['validators'] = array('required') + $existing_validators;
+      }
+    }   
+    
+    
   }
 
   // new feature : hide validated fields
@@ -142,7 +157,7 @@ function fieldcheck_form() {
     '#type' => 'textfield',
     '#title' => 'even number',
     '#attributes' => array(
-      'validators' => array('number even'),
+      'validators' => array('number','even'),
     ),
     '#required' => TRUE,
   );
@@ -150,32 +165,32 @@ function fieldcheck_form() {
     '#type' => 'textfield',
     '#title' => 'uneven number',
     '#attributes' => array(
-      'validators' => array('number uneven'),
+      'validators' => array('number', 'uneven'),
     ),
     '#required' => TRUE,
   );
-  $form['test'] = array(
-    '#type' => 'textfield',
-    '#title' => 'fchars',
-    '#attributes' => array(
-      'validators' => array('lchars|123'),
-    ),
-  );
-  $form['date'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Enter a date (masked)',
-    '#attributes' => array(
-      'mask' => '99-99-9999',
-    ),
-  );
-  $form['test2'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Email',
-    '#attributes' => array(
-      'validators' => array('email'),
-    ),
-    '#required' => TRUE,
-  );
+//  $form['test'] = array(
+//    '#type' => 'textfield',
+//    '#title' => 'fchars',
+//    '#attributes' => array(
+//      'validators' => array('lchars|123'),
+//    ),
+//  );
+//  $form['date'] = array(
+//    '#type' => 'textfield',
+//    '#title' => 'Enter a date (masked)',
+//    '#attributes' => array(
+//      'mask' => '99-99-9999',
+//    ),
+//  );
+//  $form['test2'] = array(
+//    '#type' => 'textfield',
+//    '#title' => 'Email',
+//    '#attributes' => array(
+//      'validators' => array('email'),
+//    ),
+//    '#required' => TRUE,
+//  );
   $form['submit'] = array(
       '#type' => 'submit', 
       '#value' => 'Verzenden die hap!',
