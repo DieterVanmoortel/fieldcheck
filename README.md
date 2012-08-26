@@ -6,8 +6,8 @@
 
 - Instant form validation and feedback through fast AJAX calls
 - Integrated with Drupal's element_validation for forms
+- Checks all entered values client-side before submitting ( when extra class is added to the submit button.. )
 - Optional masked input in fields using the Masked Input Plugin (http://digitalbush.com/projects/masked-input-plugin/)
-- Optional : hide all elements that were succesfully validated after submit ( better UX )
 
 ###How it works :
 
@@ -26,6 +26,8 @@ e.g.
 
 You can use the validators of fieldcheck module, which will be added in time.. or you can write your own validators.
 
+If you want your form to be validated AGAIN before submission, give the submit button a 'validate-submission' class.
+ 
 ###How to write your own validators? => Hook_fieldcheck
 
 Use your validators as keys in the array of fieldchecks.
