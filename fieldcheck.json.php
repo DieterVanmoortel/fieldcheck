@@ -12,6 +12,19 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_LANGUAGE); //  Faster alternative to bootstrap
 $validators = explode(' ', $_POST['validators']);
 $value = $_POST['value'];
 $element = $_POST['element'];
+if(empty($value) || empty($element)){
+  header("Status: 403 Forbidden");
+  header("Cache-Control: no-cache");
+  exit('Invalid Page Request');
+}
+// Check if these are european chars..
+//mb_substitute_character(NULL);
+//
+//$mb = mb_convert_encoding($value, "ISO-8859-15");
+//
+//if(strlen($mb) == 0){
+//  return drupal_json_encode(array('status' => FALSE, 'error' => 'Invalid Charset', 'element' => $element));
+//}
 
 drupal_json_output(fieldcheck_validate($value, $validators, $element));
 

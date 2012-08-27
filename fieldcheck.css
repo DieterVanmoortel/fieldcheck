@@ -2,4 +2,5 @@
 .form-item .validated.succes{border:1px solid green;}
 .form-item .validated-icon{padding:5px 13px;background: transparent url('images/Check-icon.png') no-repeat center center; display:inline;}
 .form-item .validation-msg{color:#FF0000;}
+.form-item .spinner{display:inline;}
 
