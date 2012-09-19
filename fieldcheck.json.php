@@ -17,14 +17,10 @@ if(empty($value) || empty($element)){
   header("Cache-Control: no-cache");
   exit('Invalid Page Request');
 }
-// Check if these are european chars..
-//mb_substitute_character(NULL);
-//
-//$mb = mb_convert_encoding($value, "ISO-8859-15");
-//
-//if(strlen($mb) == 0){
-//  return drupal_json_encode(array('status' => FALSE, 'error' => 'Invalid Charset', 'element' => $element));
-//}
+// Check if these are foreign chars..
+  if(!preg_match("/\w/", $value)){
+    drupal_json_output(array('succes' => FALSE, 'error' => 'Invalid Charset', 'element' => $element));
+  }
 
 drupal_json_output(fieldcheck_validate($value, $validators, $element));
 
